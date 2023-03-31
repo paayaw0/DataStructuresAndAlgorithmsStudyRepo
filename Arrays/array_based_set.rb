@@ -1,6 +1,7 @@
 require 'byebug'
 # abstract data type based on the array but with a defined rule of allowing only unique elements
 class DuplicateValueError < StandardError; end
+class InvalidIndexError < StandardError; end
 
 class ArrayBasedSet
   attr_accessor :array
@@ -10,6 +11,8 @@ class ArrayBasedSet
   end
 
   def read(index)
+    raise InvalidIndexError if index < 0
+
     array[index]
   end
 
@@ -27,6 +30,7 @@ class ArrayBasedSet
   end
 
   def insert(index, value)
+    raise InvalidIndexError if index < 0
     raise DuplicateValueError if value_already_exists?(value)
 
     (array[index] = value) && (return true) if index.zero? && array.empty?
@@ -46,7 +50,9 @@ class ArrayBasedSet
     array[index] = value if array[index].nil?
   end
 
-  def delete; end
+  def delete(index)
+    raise InvalidIndexError if index < 0
+  end
 
 
   private 
@@ -75,5 +81,9 @@ abs.insert(3, 9)
 p abs.array
 abs.insert(1, :insert)
 p abs.array
-p abs.search('hai')
-abs.insert(0, 9)
+p abs.search('hi')
+# abs.insert(0, 9)
+abs.delete(4)
+p abs.array
+abs.delete(0)
+p abs.array
