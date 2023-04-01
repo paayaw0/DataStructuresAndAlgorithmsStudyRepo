@@ -1,4 +1,4 @@
-def bubble_sort(array)
+def bubble_sort(array, sorting_order:)
   last_index = array.length - 1
   last_sorted_index = last_index
   unsorted = true
@@ -13,11 +13,13 @@ def bubble_sort(array)
       l_pointer = index
       r_pointer = index + 1
 
+      op = sorting_order == 'asc' ? :> : :<
+
       need_to_swap =
         if block_given?
-          yield(array[l_pointer]) > yield(array[r_pointer])
+          yield(array[l_pointer]).send(op, yield(array[r_pointer]))
         else
-          array[l_pointer] > array[r_pointer]
+          array[l_pointer].send(op, (array[r_pointer]))
         end
 
       if need_to_swap
