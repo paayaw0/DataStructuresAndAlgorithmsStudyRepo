@@ -21,7 +21,7 @@ RSpec.describe 'Bubble Sort' do
 
   context 'sort array of numbers' do
     it 'successfully' do
-      array = [9, 8, 7, 6, 5, 4, 3, 2, 1]
+      array = [9, 8, 7, 6, 5, 4, 3, 2, 1].shuffle
       bubble_sorted_array = bubble_sort(array, sorting_order: sorting_order)
 
       expect(sorted_array?(bubble_sorted_array, sorting_order: sorting_order)).to eq(true)
@@ -30,7 +30,7 @@ RSpec.describe 'Bubble Sort' do
 
   context 'sort array based on any numerical criteria' do
     it 'successfully' do
-      array_of_words = ['hello', 'world', 'a', 'Ruby on Rails']
+      array_of_words = ['hello', 'world', 'a', 'Ruby on Rails'].shuffle
       bubble_sorted_array = bubble_sort(array_of_words, sorting_order: sorting_order, &:length)
 
       expect(sorted_array?(bubble_sorted_array, sorting_order: sorting_order, &:length)).to eq(true)

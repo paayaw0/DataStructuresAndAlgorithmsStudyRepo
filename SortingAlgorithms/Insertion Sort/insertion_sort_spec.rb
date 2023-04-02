@@ -22,7 +22,7 @@ RSpec.describe 'Insertion Sort' do
 
   context 'sort array of numbers' do
     it 'successfully' do
-      array = [1, 9, 3, 6, 5, 2, 4, 7, 8]
+      array = [1, 9, 3, 6, 5, 2, 4, 7, 8].shuffle
       insertion_sorted_array = insertion_sort(array, sorting_order: sorting_order)
 
       expect(sorted_array?(insertion_sorted_array, sorting_order: sorting_order)).to eq(true)
@@ -31,7 +31,7 @@ RSpec.describe 'Insertion Sort' do
 
   context 'sort array based on any numerical criteria' do
     it 'successfully' do
-      array_of_words = ['hello', 'world', 'a', 'Ruby on Rails']
+      array_of_words = ['hello', 'world', 'a', 'Ruby on Rails'].shuffle
       insertion_sorted_array = insertion_sort(array_of_words, sorting_order: sorting_order, &:length)
 
       expect(sorted_array?(insertion_sorted_array, sorting_order: sorting_order, &:length)).to eq(true)

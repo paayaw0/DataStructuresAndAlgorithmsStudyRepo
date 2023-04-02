@@ -1,4 +1,6 @@
 def insertion_sort(array, sorting_order:)
+  unsorted_array = array.dup
+
   if sorting_order == 'asc'
     index = 1
     last_index = array.length - 1
@@ -56,6 +58,10 @@ def insertion_sort(array, sorting_order:)
       index -= 1
     end
   end
+
+  puts "unsorted: #{unsorted_array}"
+  puts "sorted: #{array}"
+  puts ""
 
   array
 end

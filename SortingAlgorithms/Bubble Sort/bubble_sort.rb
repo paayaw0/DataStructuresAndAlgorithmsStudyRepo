@@ -33,5 +33,9 @@ def bubble_sort(array, sorting_order:)
     last_sorted_index -= 1
   end
 
+  puts "unsorted: #{unsorted_array}"
+  puts "sorted: #{array}"
+  puts ""
+
   array
 end
