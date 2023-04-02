@@ -11,12 +11,11 @@ def insertion_sort(array, sorting_order:)
 
       while lvi >= 0
         no_need_to_shift =
-
-        if block_given?
-          yield(array[lvi]) < yield(temp_value)
-        else
-          array[lvi] < temp_value
-        end
+          if block_given?
+            yield(array[lvi]) < yield(temp_value)
+          else
+            array[lvi] < temp_value
+          end
 
         break if no_need_to_shift
 
@@ -39,11 +38,14 @@ def insertion_sort(array, sorting_order:)
       rvi = index + 1 # rvi= right_value_index
 
       while rvi <= -1
-        if block_given?
-          break if yield(array[rvi]) < yield(temp_value)
-        elsif array[rvi] < temp_value
-          break
-        end
+        no_need_to_shift =
+          if block_given?
+            yield(array[rvi]) < yield(temp_value)
+          else
+            array[rvi] < temp_value
+          end
+
+        break if no_need_to_shift
 
         array[rvi - 1] = array[rvi]
         rvi += 1
