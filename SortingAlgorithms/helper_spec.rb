@@ -1,3 +1,5 @@
+require 'byebug'
+
 def sorted_array?(array, sorting_order:)
   op =
     if sorting_order == 'asc'

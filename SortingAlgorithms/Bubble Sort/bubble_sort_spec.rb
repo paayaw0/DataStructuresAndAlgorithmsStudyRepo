@@ -1,5 +1,5 @@
 require_relative './bubble_sort'
-require_relative './helper_spec'
+require_relative './../helper_spec'
 
 RSpec.describe 'Bubble Sort' do
   begin
@@ -32,7 +32,7 @@ RSpec.describe 'Bubble Sort' do
     it 'successfully' do
       array_of_words = ['hello', 'world', 'a', 'Ruby on Rails']
       bubble_sorted_array = bubble_sort(array_of_words, sorting_order: sorting_order, &:length)
-      
+
       expect(sorted_array?(bubble_sorted_array, sorting_order: sorting_order, &:length)).to eq(true)
     end
   end
