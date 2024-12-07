@@ -1,178 +1,136 @@
+require 'byebug'
 class Node
-  attr_accessor :data, :next_node
+  attr_accessor :data, :left_child, :right_child
 
-  def initialize(data, next_node = nil)
+  def initialize(data = nil, left_child = nil, right_child = nil)
     @data = data
-    @next_node = next_node
+    @left_child = left_child
+    @right_child = right_child
+  end
+
+  def next_node=(node)
+    if node.data < self.data
+      if left_child.nil?
+        self.left_child = node
+      end
+    else
+      if right_child.nil?
+        self.right_child = node
+      end
+    end
+  end
+
+  def to_s
+    "Node -> data: #{self.data || 'none'}, left_child: #{self.left_child || 'none'}, right_child: #{self.right_child || 'none'}"
+  end
+
+  def display
+    to_s
+  end
+
+  def inspect
+    display
   end
 end
 
-class LinkedList
-  attr_accessor :first_node
+class BinarySearchTree
+  attr_accessor :root_node
 
-  def initialize(first_node)
-    @first_node = first_node
+  def initialize(root_node = nil)
+    @root_node = root_node
   end
 
-  def read(index)
-    current_node = first_node
-    current_index = 0
+  def search_node(node_value, current_node = self.root_node)
+    return current_node if (node_value == current_node&.data) || current_node.nil?
 
-    while current_node && current_index < index
-      current_index += 1
-      current_node = current_node.next_node
-
-      puts "current_index #{current_index}, current_node #{current_node&.data}"
+    if node_value < current_node.data
+      search_node(node_value, current_node.left_child)
+    else
+      search_node(node_value, current_node.right_child)
     end
-
-    return current_node&.data
   end
 
-  def index_of(value)
-    current_index = 0
-    current_node = first_node
-
-    while current_node && current_node.data != value
-      current_index += 1
-      current_node = current_node.next_node
-    end
-
-    return current_node&.data
-  end
-
-  def insert_at_index(index, value)
-    new_node = Node.new(value)
+  def construct_tree(array)
+    tree = self
+    index = 0
+    pointer = 1    
     
-    if index == 0
-      new_node.next_node = first_node
-      self.first_node = new_node
+    while (index + pointer) < array.length
+      if index == 0
+        tree.root_node = Node.new(array[index])
+        current_node = tree.root_node
+      end
+    
       
-      return
-    end
-
-    current_index = 0
-    current_node = first_node
-
-    while current_node && (current_index < (index - 1))
-      current_index += 1
-      current_node = current_node.next_node
-    end
-
-    new_node.next_node = current_node.next_node
-    current_node.next_node = new_node
-  end
-
-  def delete_at_index(index)
-    if index == 0
-      self.first_node = first_node.next_node
-      return
-    end
-
-    current_index = 0
-    current_node = first_node
-
-    while current_node && current_index < (index - 1)
-      current_index += 1
-      current_node = current_node.next_node    
-    end
-
-    node_after_deleted_node = current_node.next_node.next_node
-    current_node.next_node = node_after_deleted_node
-  end
-
-  def print_nodes
-    current_node = first_node
-
-    while current_node
-      puts current_node.data
-      current_node = current_node.next_node
+      current_node.next_node = Node.new(array[index + pointer])
+      current_node.next_node = Node.new(array[index + pointer+= 1])
+      index += 1
+      current_node = tree.search_node(array[index], tree.root_node)
     end
   end
-  
-  def last_node
-    current_node = first_node
 
-    loop do
-      break if current_node.next_node.nil?
+  def insert_node(value, current_node = self.root_node)
+    node = Node.new(value)
 
-      current_node = current_node.next_node
+    if node.data < current_node.data
+      if current_node.left_child.nil?
+        current_node.left_child = node
+      else
+        insert_node(value, current_node.left_child)
+      end
+    else
+      if current_node.right_child.nil?
+        current_node.right_child = node
+      else
+        insert_node(value, current_node.right_child)
+      end
     end
-
-    current_node&.data
   end
 
+  def find_successor_node(value, current_node)
+    return if current_node.nil?
 
-  def reverse_linked_list
-    current_node = first_node
-    previous_node = nil
-
-    while current_node
-      temp_node = current_node
-      current_node = current_node.next_node
-
-      temp_node.next_node = previous_node
-      previous_node = temp_node
+    if current_node.left_child
+      current_node.left_child = find_successor_node(value, current_node.left_child)
+      return current_node
+    else
+      node_to_delete = search_node(value, self.root_node)
+      node_to_delete.data, current_node.data = current_node.data, node_to_delete.data
+      return current_node.right_child
     end
+  end
 
-    self.first_node = previous_node
+  def delete_node(value, current_node = self.root_node)
+    return if current_node.nil?
+
+    if value < current_node.data
+      current_node.left_child = delete_node(value, current_node.left_child)
+      return current_node
+    elsif value > current_node.data
+      current_node.right_child = delete_node(value, current_node.right_child)
+      return current_node
+    elsif value == current_node.data
+      if current_node.left_child.nil?
+        return current_node.right_child
+      elsif current_node.right_child.nil?
+        return current_node.left_child
+      else
+        current_node.right_child = find_successor_node(value, current_node.right_child)
+        return current_node
+      end
+    end
   end
 end
 
-node1 = Node.new('one')
-node2 = Node.new('two')
-node3 = Node.new('three')
-node4 = Node.new('four')
+tree = BinarySearchTree.new
 
-node1.next_node = node2
-node2.next_node = node3
-node3.next_node = node4
+array = [50, 25, 75, 10, 33, 56, 89, 4, 11, 30, 40, 52, 61, 82, 95]
 
-linked_list = LinkedList.new(node1)
+tree.construct_tree(array)
 
-puts linked_list.first_node
+# tree.insert_node(88)
+tree.delete_node(25)
 
-puts 'read'
-puts linked_list.read(2)
-puts ''
-puts linked_list.read(9)
-puts ''
-puts 'search'
-puts linked_list.index_of('three')
-puts ''
-puts linked_list.index_of('four')
-puts linked_list.index_of('five')
-puts ''
-puts 'insert'
-puts linked_list.read(1)
-linked_list.insert_at_index(1, '1.5')
-puts linked_list.read(1)
-puts '-----'
-puts linked_list.read(4)
-linked_list.insert_at_index(4, 'five')
-puts linked_list.read(4)
-puts ''
-puts 'delete'
-puts linked_list.read(1)
-linked_list.delete_at_index(1)
-puts linked_list.read(1)
-puts ''
-puts 'print nodes'
-linked_list.print_nodes
-puts ''
-puts 'print last nod'
-puts linked_list.last_node
-puts ''
-puts 'reverse linked list'
-puts linked_list.reverse_linked_list
-linked_list.print_nodes
+p tree
 
-puts node3.data
-puts ''
-
-next_node = node3.next_node
-node3.data =  next_node.data
-node3.next_node = next_node.next_node
-
-puts linked_list.print_nodes
-array = ['one', 'two', 'three', 'four']
 
